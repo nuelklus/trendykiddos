@@ -6,9 +6,9 @@ DEBUG = True
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('LOCAL_DB_NAME', 'hardware_ecommerce'),
+        'NAME': os.getenv('LOCAL_DB_NAME', 'ggsalon'),
         'USER': os.getenv('LOCAL_DB_USER', 'postgres'),
-        'PASSWORD': os.getenv('LOCAL_DB_PASSWORD', ''),
+        'PASSWORD': os.getenv('LOCAL_DB_PASSWORD', '1234567890'),
         'HOST': os.getenv('LOCAL_DB_HOST', 'localhost'),
         'PORT': os.getenv('LOCAL_DB_PORT', '5432'),
         'OPTIONS': {
