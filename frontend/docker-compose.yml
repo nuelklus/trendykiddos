@@ -1,0 +1,21 @@
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: https://trendykiddosgh.com/api
+
+    container_name: trendykiddos-frontend
+
+    restart: unless-stopped
+
+    ports:
+      - "127.0.0.1:3013:3000"
+
+    networks:
+      - nexlogs-internal-network
+
+networks:
+  nexlogs-internal-network:
+    external: true
