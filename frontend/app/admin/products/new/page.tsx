@@ -2,6 +2,7 @@
 
 import React, { useState, useRef } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
+import { isAdminUser } from '@/lib/auth';
 import { ProtectedRoute } from '@/components/ProtectedRoute';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
@@ -58,8 +59,9 @@ function AddProductContent() {
     try {
       setCategoriesLoading(true);
       setCategoriesError('');
-      
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+      console.log(process.env.NEXT_PUBLIC_API_URL,'123456Fetching categories from API...');
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+      console.log('Fetching categories from API URL:', `${apiUrl}/products/categories/`);
       const response = await fetch(`${apiUrl}/products/categories/`);
       if (!response.ok) {
         throw new Error('Failed to fetch categories');
@@ -121,6 +123,7 @@ function AddProductContent() {
     fetchCategories();
     fetchBrands();
   }, []);
+  console.log('Fetching categories and brands on component mount');
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -351,7 +354,7 @@ function AddProductContent() {
     }
   };
 
-  if (user?.role !== 'ADMIN') {
+  if (!isAdminUser(user)) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">

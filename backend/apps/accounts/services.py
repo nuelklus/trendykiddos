@@ -56,6 +56,7 @@ class AuthService:
             username=username,
             email=email,
             role=role,
+            is_staff=role == UserRole.STAFF,
             phone_number=phone_number,
             staff_role=staff_role if role == UserRole.STAFF else None,
             organization=organization

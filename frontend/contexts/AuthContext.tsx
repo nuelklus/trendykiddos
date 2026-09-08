@@ -61,13 +61,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             console.log('Auth: Token preview:', storedToken ? storedToken.substring(0, 20) + '...' : 'none');
             console.log('Auth: User preview:', storedUser ? { id: storedUser.id, role: storedUser.role } : null);
             
-            const isValid = await apiClient.validateTokenWithServer(storedToken);
-            console.log('Auth: Token validation result:', isValid);
-            
-            if (!isValid) {
+            const refreshedUser = await apiClient.getCurrentUserWithValidation();
+            console.log('Auth: Token validation result:', !!refreshedUser);
+
+            if (!refreshedUser) {
               console.log('Auth: Token validation failed, logging out');
               await apiClient.logout();
             } else {
+              setUser(refreshedUser);
               console.log('Auth: Token validation successful, user remains logged in');
             }
           } catch (validationError: unknown) {

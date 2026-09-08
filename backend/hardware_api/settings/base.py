@@ -6,16 +6,23 @@ from dotenv import dotenv_values, load_dotenv
 
 BASE_DIR = Path(__file__).resolve().parents[2]
 
-load_dotenv(BASE_DIR / ".env")
+_env_files = [BASE_DIR / ".env.local", BASE_DIR / ".env"]
+for env_path in _env_files:
+    if env_path.exists():
+        load_dotenv(env_path, override=False)
 
-_dotenv = dotenv_values(BASE_DIR / ".env")
+_dotenv = {}
+for env_path in _env_files:
+    if env_path.exists():
+        _dotenv.update(dotenv_values(env_path) or {})
+
 if "DATABASE_URL" not in os.environ:
     if "DATABASE_URL" in _dotenv and _dotenv["DATABASE_URL"]:
         os.environ["DATABASE_URL"] = str(_dotenv["DATABASE_URL"])
     elif "\ufeffDATABASE_URL" in _dotenv and _dotenv["\ufeffDATABASE_URL"]:
         os.environ["DATABASE_URL"] = str(_dotenv["\ufeffDATABASE_URL"])
 
-SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "change-me")
+SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "your-very-secret-key-here-change-this-in-production")
 DEBUG = os.getenv("DJANGO_DEBUG", "false").lower() in {"1", "true", "yes"}
 # ALLOWED_HOSTS = [h.strip() for h in os.getenv("DJANGO_ALLOWED_HOSTS", "localhost,127.0.0.1").split(",") if h.strip()]
 ALLOWED_HOSTS = ['*']
@@ -123,13 +130,20 @@ REST_FRAMEWORK = {
 
 from datetime import timedelta
 
+JWT_SIGNING_KEY = (
+    os.getenv("JWT_SECRET_KEY")
+    or os.getenv("SECRET_KEY")
+    or SECRET_KEY
+    or "your-very-secret-key-here-change-this-in-production"
+)
+
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(hours=24),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
     "ROTATE_REFRESH_TOKENS": True,
     "BLACKLIST_AFTER_ROTATION": True,
     "ALGORITHM": "HS256",
-    "SIGNING_KEY": os.getenv("JWT_SECRET_KEY", os.getenv("SECRET_KEY")),
+    "SIGNING_KEY": JWT_SIGNING_KEY,
     "VERIFYING_KEY": None,
     "AUTH_HEADER_TYPES": ("Bearer",),
     "AUTH_HEADER_NAME": "HTTP_AUTHORIZATION",

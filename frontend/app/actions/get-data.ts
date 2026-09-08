@@ -6,7 +6,7 @@ export async function getCategories() {
   try {
     const cookieStore = cookies()
     const token = cookieStore.get('access_token')?.value
-    console.log('token - token', token)
+    console.log('token 4567898765- token', token)
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api'}/products/categories/`, {
       method: 'GET',
       headers: {

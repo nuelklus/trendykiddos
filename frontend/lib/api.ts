@@ -21,7 +21,8 @@ export interface User {
   id: number;
   username: string;
   email: string;
-  role: 'CUSTOMER' | 'PRO_CONTRACTOR' | 'ADMIN';
+  role: 'CUSTOMER' | 'PRO_CONTRACTOR' | 'STAFF' | 'ADMIN';
+  staff_role?: 'MANAGER' | 'CASHIER' | 'INVENTORY_STAFF' | 'ADMIN' | null;
   phone_number: string;
   date_joined: string;
 }
@@ -844,7 +845,10 @@ class ApiClient {
       return null;
     }
 
-    return user;
+    // Refresh role/staff fields so authorization is not based on stale local storage.
+    const profile = await this.getProfile();
+    localStorage.setItem(TOKEN_KEYS.USER, JSON.stringify(profile));
+    return profile;
   }
 
   getCurrentUser(): User | null {

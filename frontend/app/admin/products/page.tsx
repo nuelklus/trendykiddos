@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
+import { isAdminUser } from '@/lib/auth';
 import { ProtectedRoute } from '@/components/ProtectedRoute';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
@@ -291,7 +292,7 @@ function ProductsManagementContent() {
     }
   };
 
-  if (user?.role !== 'ADMIN') {
+  if (!isAdminUser(user)) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">

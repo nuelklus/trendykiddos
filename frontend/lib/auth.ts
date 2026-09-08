@@ -1,6 +1,7 @@
 
 
 import { apiClient } from './api';
+import type { User } from './api';
 
 export type {
   User,
@@ -12,6 +13,10 @@ export type {
 } from './api';
 
 export { apiClient } from './api';
+
+export const isAdminUser = (user: User | null | undefined): boolean =>
+  user?.role === 'ADMIN' ||
+  (user?.role === 'STAFF' && user.staff_role === 'ADMIN');
 
 export const authAPI = {
   register: apiClient.register.bind(apiClient),
